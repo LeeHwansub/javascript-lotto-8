@@ -10,8 +10,17 @@ class InputValidator {
   }
 
   static validateAmountType(amount) {
-    const amountNumber = Number(amount);
+    const trimmedAmount = String(amount).trim();
+    if (trimmedAmount === "") {
+      throw new Error("[ERROR] 로또 구입 금액을 입력해 주세요.");
+    }
+
+    const amountNumber = Number(trimmedAmount);
     if (isNaN(amountNumber)) {
+      throw new Error("[ERROR] 로또 구입 금액은 숫자여야 합니다.");
+    }
+
+    if (!Number.isInteger(amountNumber)) {
       throw new Error("[ERROR] 로또 구입 금액은 숫자여야 합니다.");
     }
   }
@@ -32,10 +41,42 @@ class InputValidator {
     }
   }
 
-  static validateWinningNumbers(numbers) {
+  static validateWinningNumbers(input) {
+    const numbers = this.parseWinningNumbers(input);
     this.validateNumberCount(numbers);
     this.validateNumberRange(numbers);
     this.validateUniqueNumbers(numbers);
+    return numbers;
+  }
+
+  static parseWinningNumbers(input) {
+    if (!input || input.trim() === "") {
+      throw new Error("[ERROR] 당첨 번호를 입력해 주세요.");
+    }
+
+    const numbers = input.split(",").map((number) => {
+      const trimmed = number.trim();
+      if (trimmed === "") {
+        throw new Error("[ERROR] 로또 번호는 6개여야 합니다.");
+      }
+
+      const parsed = Number(trimmed);
+      if (isNaN(parsed)) {
+        throw new Error(
+          "[ERROR] 로또 번호는 1부터 45 사이의 숫자여야 합니다."
+        );
+      }
+
+      if (!Number.isInteger(parsed)) {
+        throw new Error(
+          "[ERROR] 로또 번호는 1부터 45 사이의 숫자여야 합니다."
+        );
+      }
+
+      return parsed;
+    });
+
+    return numbers;
   }
 
   static validateNumberCount(numbers) {
@@ -62,9 +103,34 @@ class InputValidator {
     }
   }
 
-  static validateBonusNumber(bonusNumber, winningNumbers) {
+  static validateBonusNumber(input, winningNumbers) {
+    const bonusNumber = this.parseBonusNumber(input);
     this.validateBonusRange(bonusNumber);
     this.validateBonusDuplicate(bonusNumber, winningNumbers);
+    return bonusNumber;
+  }
+
+  static parseBonusNumber(input) {
+    const trimmedInput = input.trim();
+
+    if (trimmedInput === "") {
+      throw new Error("[ERROR] 보너스 번호를 입력해 주세요.");
+    }
+
+    const bonusNumber = Number(trimmedInput);
+    if (isNaN(bonusNumber)) {
+      throw new Error(
+        "[ERROR] 보너스 번호는 1부터 45 사이의 숫자여야 합니다."
+      );
+    }
+
+    if (!Number.isInteger(bonusNumber)) {
+      throw new Error(
+        "[ERROR] 보너스 번호는 1부터 45 사이의 숫자여야 합니다."
+      );
+    }
+
+    return bonusNumber;
   }
 
   static validateBonusRange(bonusNumber) {

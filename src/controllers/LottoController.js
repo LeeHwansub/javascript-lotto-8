@@ -39,28 +39,18 @@ class LottoController {
     while (true) {
       try {
         const input = await InputView.readWinningNumbers();
-        const numbers = this.parseWinningNumbers(input);
-
-        InputValidator.validateWinningNumbers(numbers);
-        return numbers;
+        return InputValidator.validateWinningNumbers(input);
       } catch (error) {
         OutputView.print(error.message);
       }
     }
   }
 
-  parseWinningNumbers(input) {
-    return input.split(",").map((number) => Number(number.trim()));
-  }
-
   async getBonusNumber(winningNumbers) {
     while (true) {
       try {
         const input = await InputView.readBonusNumber();
-        const bonusNumber = Number(input.trim());
-
-        InputValidator.validateBonusNumber(bonusNumber, winningNumbers);
-        return bonusNumber;
+        return InputValidator.validateBonusNumber(input, winningNumbers);
       } catch (error) {
         OutputView.print(error.message);
       }
