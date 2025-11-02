@@ -1,4 +1,8 @@
+import Lotto from "../Lotto.js";
+
 class InputValidator {
+  static LOTTO_PRICE = 1000;
+
   static validatePurchaseAmount(amount) {
     this.validateAmountType(amount);
     this.validateAmountDivisible(amount);
@@ -14,7 +18,7 @@ class InputValidator {
 
   static validateAmountDivisible(amount) {
     const amountNumber = Number(amount);
-    if (amountNumber % 1000 !== 0) {
+    if (amountNumber % InputValidator.LOTTO_PRICE !== 0) {
       throw new Error(
         "[ERROR] 로또 구입 금액은 1,000원 단위로 입력해야 합니다."
       );
@@ -35,16 +39,14 @@ class InputValidator {
   }
 
   static validateNumberCount(numbers) {
-    if (numbers.length !== 6) {
+    if (numbers.length !== Lotto.LOTTO_NUMBER_COUNT) {
       throw new Error("[ERROR] 로또 번호는 6개여야 합니다.");
     }
   }
 
   static validateNumberRange(numbers) {
-    const minNumber = 1;
-    const maxNumber = 45;
     const outOfRange = numbers.some(
-      (number) => number < minNumber || number > maxNumber
+      (number) => number < Lotto.MIN_NUMBER || number > Lotto.MAX_NUMBER
     );
     if (outOfRange) {
       throw new Error(
@@ -66,9 +68,10 @@ class InputValidator {
   }
 
   static validateBonusRange(bonusNumber) {
-    const minNumber = 1;
-    const maxNumber = 45;
-    if (bonusNumber < minNumber || bonusNumber > maxNumber) {
+    if (
+      bonusNumber < Lotto.MIN_NUMBER ||
+      bonusNumber > Lotto.MAX_NUMBER
+    ) {
       throw new Error(
         "[ERROR] 보너스 번호는 1부터 45 사이의 숫자여야 합니다."
       );

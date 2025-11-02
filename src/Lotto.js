@@ -1,4 +1,8 @@
 class Lotto {
+  static LOTTO_NUMBER_COUNT = 6;
+  static MIN_NUMBER = 1;
+  static MAX_NUMBER = 45;
+
   #numbers;
 
   constructor(numbers) {
@@ -13,7 +17,7 @@ class Lotto {
   }
 
   #validateCount(numbers) {
-    if (numbers.length !== 6) {
+    if (numbers.length !== Lotto.LOTTO_NUMBER_COUNT) {
       throw new Error("[ERROR] 로또 번호는 6개여야 합니다.");
     }
   }
@@ -26,10 +30,8 @@ class Lotto {
   }
 
   #validateRange(numbers) {
-    const minNumber = 1;
-    const maxNumber = 45;
     const outOfRange = numbers.some(
-      (number) => number < minNumber || number > maxNumber
+      (number) => number < Lotto.MIN_NUMBER || number > Lotto.MAX_NUMBER
     );
     if (outOfRange) {
       throw new Error("[ERROR] 로또 번호는 1부터 45 사이의 숫자여야 합니다.");

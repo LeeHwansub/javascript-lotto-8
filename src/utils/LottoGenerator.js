@@ -3,7 +3,11 @@ import Lotto from "../Lotto.js";
 
 class LottoGenerator {
   static generateLottoNumbers() {
-    const numbers = MissionUtils.Random.pickUniqueNumbersInRange(1, 45, 6);
+    const numbers = MissionUtils.Random.pickUniqueNumbersInRange(
+      Lotto.MIN_NUMBER,
+      Lotto.MAX_NUMBER,
+      Lotto.LOTTO_NUMBER_COUNT
+    );
     return new Lotto(numbers);
   }
 
