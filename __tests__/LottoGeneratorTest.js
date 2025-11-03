@@ -68,4 +68,3 @@ describe("LottoGenerator 테스트", () => {
     expect(uniqueNumbers.size).toBe(6);
   });
 });
-

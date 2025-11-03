@@ -98,4 +98,3 @@ class PrizeCalculator {
 }
 
 export default PrizeCalculator;
-

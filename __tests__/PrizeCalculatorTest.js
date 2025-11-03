@@ -141,4 +141,3 @@ describe("PrizeCalculator 테스트", () => {
     });
   });
 });
-

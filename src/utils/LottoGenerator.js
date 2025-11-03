@@ -21,4 +21,3 @@ class LottoGenerator {
 }
 
 export default LottoGenerator;
-
