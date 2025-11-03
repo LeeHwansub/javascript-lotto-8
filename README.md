@@ -371,3 +371,5 @@ sequenceDiagram
   LC-->>OV: 통계/수익률 출력
   OV-->>U: 결과 표시
 ```
+![아키텍처 플로우 (이미지)](docs/flowchart.svg)
+![시퀀스 다이어그램 (이미지)](docs/sequence-diagram.svg)
