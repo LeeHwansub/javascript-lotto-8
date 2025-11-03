@@ -3,7 +3,6 @@ import OutputView from "../views/OutputView.js";
 import InputValidator from "../utils/InputValidator.js";
 import LottoGenerator from "../utils/LottoGenerator.js";
 import PrizeCalculator from "../utils/PrizeCalculator.js";
-import Lotto from "../Lotto.js";
 
 class LottoController {
   async run() {
