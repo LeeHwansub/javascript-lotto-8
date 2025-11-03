@@ -36,6 +36,40 @@ __tests__/
 └── ApplicationTest.js       # 통합 테스트
 ```
 
+## 아키텍처 플로우
+
+```mermaid
+flowchart TD
+  A[사용자] -->|입력| IV[InputView]
+  IV -->|문자열 입력| LC[LottoController]
+
+  subgraph Validation & Parsing
+    LC -->|위임| V[InputValidator]
+    V -->|파싱 및 검증 결과| LC
+  end
+
+  LC -->|금액→개수 계산| LG[LottoGenerator]
+  LG -->|Lotto 배열| LC
+
+  subgraph Domain
+    L[Lotto]
+    PC[PrizeCalculator]
+  end
+
+  LC -->|당첨 번호·보너스| PC
+  L --> PC
+  PC -->|통계·총금액·수익률| LC
+
+  LC -->|발행 내역/통계/수익률| OV[OutputView]
+  OV -->|출력| A
+```
+
+- 입력: InputView → Controller (문자열)
+- 파싱·검증: Controller → InputValidator (SSOT)
+- 생성: Controller → LottoGenerator → Lotto[]
+- 계산: Controller/Lotto → PrizeCalculator
+- 출력: Controller → OutputView
+
 ## 기능 목록
 
 ### 1. 로또 구입 금액 입력
