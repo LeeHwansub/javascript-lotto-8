@@ -326,3 +326,48 @@ flowchart TD
 - 포맷팅 정책 테스트 고정: 수익률(둘째 자리 반올림)·금액 표기 형식을 테스트로 보장
 - 컨트롤러 무상태화 확인: 상태 공유 없이 입력→계산→출력의 흐름만 조합
 - 테스트 파라미터화 강화: 등수 판정/통계 계산에 `test.each` 적용 여지 문서화
+```
+
+## 시퀀스 다이어그램
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant U as 사용자
+  participant IV as InputView
+  participant LC as LottoController
+  participant V as InputValidator
+  participant LG as LottoGenerator
+  participant L as Lotto
+  participant PC as PrizeCalculator
+  participant OV as OutputView
+
+  U->>IV: 구입금액 입력 요청
+  IV-->>LC: 금액 문자열 반환
+  LC->>V: 금액 검증(validatePurchaseAmount)
+  V-->>LC: OK / [ERROR]
+  loop 에러 시 재입력
+    LC-->>OV: [ERROR] 출력
+    LC->>IV: 금액 재입력 요청
+    IV-->>LC: 금액 문자열
+    LC->>V: 검증 재시도
+  end
+
+  LC->>LG: 로또 개수 계산 후 generateLottos(count)
+  LG-->>LC: Lotto[]
+  LC-->>OV: 발행 내역 출력(printLottos)
+
+  U->>IV: 당첨 번호/보너스 입력
+  IV-->>LC: 입력 문자열
+  LC->>V: validateWinningNumbers / validateBonusNumber
+  V-->>LC: [numbers, bonus]
+
+  LC->>PC: calculateStatistics(Lotto[], numbers, bonus)
+  PC->>L: countMatchingNumbers / hasBonusNumber
+  L-->>PC: 일치 개수/보너스 포함 여부
+  PC-->>LC: 등수별 통계
+  LC->>PC: calculateTotalPrizeAmount / calculateProfitRate
+  PC-->>LC: 총 당첨 금액/수익률
+  LC-->>OV: 통계/수익률 출력
+  OV-->>U: 결과 표시
+```
