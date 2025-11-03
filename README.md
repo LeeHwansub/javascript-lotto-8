@@ -7,6 +7,7 @@
 ## 목차
 
 - [프로젝트 구조](#프로젝트-구조)
+- [시퀀스 다이어그램](#시퀀스-다이어그램)
 - [기능 목록](#기능-목록)
 - [예외 처리](#예외-처리)
 - [실행 결과 예시](#실행-결과-예시)
@@ -36,39 +37,9 @@ __tests__/
 └── ApplicationTest.js       # 통합 테스트
 ```
 
-## 아키텍처 플로우
+## 시퀀스 다이어그램
 
-```mermaid
-flowchart TD
-  A[사용자] -->|입력| IV[InputView]
-  IV -->|문자열 입력| LC[LottoController]
-
-  subgraph Validation & Parsing
-    LC -->|위임| V[InputValidator]
-    V -->|파싱 및 검증 결과| LC
-  end
-
-  LC -->|금액→개수 계산| LG[LottoGenerator]
-  LG -->|Lotto 배열| LC
-
-  subgraph Domain
-    L[Lotto]
-    PC[PrizeCalculator]
-  end
-
-  LC -->|당첨 번호·보너스| PC
-  L --> PC
-  PC -->|통계·총금액·수익률| LC
-
-  LC -->|발행 내역/통계/수익률| OV[OutputView]
-  OV -->|출력| A
-```
-
-- 입력: InputView → Controller (문자열)
-- 파싱·검증: Controller → InputValidator (SSOT)
-- 생성: Controller → LottoGenerator → Lotto[]
-- 계산: Controller/Lotto → PrizeCalculator
-- 출력: Controller → OutputView
+![시퀀스 다이어그램 (이미지)](docs/sequence-diagram.svg)
 
 ## 기능 목록
 
@@ -307,7 +278,7 @@ flowchart TD
 - 유틸성 로직은 `static`으로 단순화하면 인스턴스 수명/상태 고민이 줄고 테스트가 쉬워진다.
 - 테스트는 명세 역할을 하므로, 경계/에러 케이스를 먼저 고정하면 리팩터링 내성이 커진다.
 
-### 다음에 더 도전할 것
+### 아쉬웠던 점
 - 입력 파이프라인의 국제화(i18n) 메시지 분리
 - 등수/금액 상수의 별도 도메인 모듈화 및 포맷터 분리(통화/퍼센트)
 - 테스트 파라미터화로 중복 축소(`describe.each`, `test.each` 적극 활용)
@@ -327,49 +298,3 @@ flowchart TD
 - 컨트롤러 무상태화 확인: 상태 공유 없이 입력→계산→출력의 흐름만 조합
 - 테스트 파라미터화 강화: 등수 판정/통계 계산에 `test.each` 적용 여지 문서화
 ```
-
-## 시퀀스 다이어그램
-
-```mermaid
-sequenceDiagram
-  autonumber
-  participant U as 사용자
-  participant IV as InputView
-  participant LC as LottoController
-  participant V as InputValidator
-  participant LG as LottoGenerator
-  participant L as Lotto
-  participant PC as PrizeCalculator
-  participant OV as OutputView
-
-  U->>IV: 구입금액 입력 요청
-  IV-->>LC: 금액 문자열 반환
-  LC->>V: 금액 검증(validatePurchaseAmount)
-  V-->>LC: OK / [ERROR]
-  loop 에러 시 재입력
-    LC-->>OV: [ERROR] 출력
-    LC->>IV: 금액 재입력 요청
-    IV-->>LC: 금액 문자열
-    LC->>V: 검증 재시도
-  end
-
-  LC->>LG: 로또 개수 계산 후 generateLottos(count)
-  LG-->>LC: Lotto[]
-  LC-->>OV: 발행 내역 출력(printLottos)
-
-  U->>IV: 당첨 번호/보너스 입력
-  IV-->>LC: 입력 문자열
-  LC->>V: validateWinningNumbers / validateBonusNumber
-  V-->>LC: [numbers, bonus]
-
-  LC->>PC: calculateStatistics(Lotto[], numbers, bonus)
-  PC->>L: countMatchingNumbers / hasBonusNumber
-  L-->>PC: 일치 개수/보너스 포함 여부
-  PC-->>LC: 등수별 통계
-  LC->>PC: calculateTotalPrizeAmount / calculateProfitRate
-  PC-->>LC: 총 당첨 금액/수익률
-  LC-->>OV: 통계/수익률 출력
-  OV-->>U: 결과 표시
-```
-![아키텍처 플로우 (이미지)](docs/flowchart.svg)
-![시퀀스 다이어그램 (이미지)](docs/sequence-diagram.svg)
